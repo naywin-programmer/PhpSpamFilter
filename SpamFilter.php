@@ -66,18 +66,18 @@ class SpamFilter
 		);
 	}
 
-	public static function result($text, $filter_size = array('urls' => 1, 'keywords' => 2))
+	public static function result($text, $filter_size = array('urls' => 1, 'keyword_if_url_match' => 1, 'keywords' => 2))
 	{
 		$instance = static::init();
 		$full_result = $instance->train($text)->fullResult();
 
 		if($full_result['count_of_matched_urls'] >= $filter_size['urls']) {
-			if($full_result['count_of_matched_keywords'] >= 1) {
+			if($full_result['count_of_matched_keywords'] >= $filter_size['keyword_if_url_match']) {
 				return true;
 			}
 		}
 
-		if($full_result['count_of_matched_keywords'] >= 1) {
+		if($full_result['count_of_matched_keywords'] >= $filter_size['keywords']) {
 			return true;
 		}
 

@@ -13,6 +13,8 @@ class SpamFilter
 	protected $urls = array();
 
 	protected $keywords = array();
+	
+	protected $default_filter_size = array('urls' => 1, 'keyword_if_url_match' => 1, 'keywords' => 2);
 
 	public static function init()
 	{
@@ -66,9 +68,14 @@ class SpamFilter
 		);
 	}
 
-	public static function result($text, $filter_size = array('urls' => 1, 'keyword_if_url_match' => 1, 'keywords' => 2))
+	public static function result($text, $filter_size = null)
 	{
 		$instance = static::init();
+		
+		if(!$filter_size || !is_array($filter_size)) {
+            		$filter_size = $instance->default_filter_size;
+        	}
+		
 		$full_result = $instance->train($text)->fullResult();
 
 		if($full_result['count_of_matched_urls'] >= $filter_size['urls']) {
